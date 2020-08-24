@@ -1,0 +1,3 @@
+graft codoxer
+global-exclude *.py[cod] __pycache__ *.so *.ipynb
+recursive-exclude  codoxer/jupy *
