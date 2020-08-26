@@ -1,4 +1,10 @@
 from sklearn.base import BaseEstimator, TransformerMixin
+from sklearn.compose import ColumnTransformer
+from sklearn.preprocessing import RobustScaler
+from sklearn.multiclass import OneVsOneClassifier
+from sklearn.linear_model import LogisticRegression
+from sklearn.pipeline import make_pipeline
+
 
 class CodingStyleFeatureExtractor(BaseEstimator, TransformerMixin):
     """Perform feature extraction for MVP
@@ -56,7 +62,10 @@ class CodingStyleFeatureExtractor(BaseEstimator, TransformerMixin):
         df['n_snakeCase'] = df.flines.apply(lambda x: sum(1 for m in re.finditer(r'[a-zA-Z]_[a-zA-Z]', x)) / len(x))
 
         # Number of non-empty lines (code + comment + docstrings)
-        df['n_lines'] = df.flines.apply(lambda x: sum(1 for m in re.finditer(r'.+', x)) / len(x))
+        #df['n_lines'] = df.flines.apply(lambda x: sum(1 for m in re.finditer(r'.+', x)) / len(x))
+
+        # Number of lines of code (excluding empty and comment, DOES NOT exclude multiline and docstring)
+        df['n_lines'] = df.flines.apply(lambda x: sum(1 for m in re.finditer(r'[^#\/]+', x)) / len(x))
 
         # Relative number of print/output statements
         df['outputs'] = df.flines.apply(lambda x: (x.count('cout') + x.count('print(') + x.count('print ') + x.count('.print')) / len(x))
@@ -65,12 +74,41 @@ class CodingStyleFeatureExtractor(BaseEstimator, TransformerMixin):
             """Counts number of comments based on language"""
             if language == 'cpp':
                 return code.count('//') + code.count('/*') + code.count('*/')
-            if language == 'python3':
+            if language == 'python':
                 return code.count('#') + code.count('"""')
             if language == 'java':
                 return code.count('//') + code.count('/*') + code.count('*/') + code.count('/**') + code.count('/**')
 
         return df
+
+
+    class Trainer(object):
+
+        def __init__(self, X, y):
+            self.X_train = X
+            self.y_train = y
+
+        def get_estimator(self):
+            return OneVsOneClassifier(LogisticRegression())
+
+        def set_pipeline(self):
+            fe = CodingStyleFeatureExtractor()
+
+            cl = ColumnTransformer([('scaler', RobustScaler(), ['code_length', 'n_loops', 'n_imports', 'n_contols', 'n_assigns',
+                    'n_asserts', 'n_newlines', 'n_whitespace', 'n_comments',
+                    'n_camelCase', 'n_lines', 'outputs', 'n_snakeCase'])])
+
+            est = get_estimator()
+
+            self.pipe = make_pipeline(fe, cl, est)
+
+        def train(self):
+
+            self.set_pipeline()
+
+            self.pipe.fit(X_train, y_train)
+
+        def
 
 
 
