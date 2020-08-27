@@ -37,16 +37,10 @@ class DataFilter(pd.DataFrame):
         self = self[self['username'].isin(keeplist)]
         return self
 
-    def filter_language(self, language):
-        '''Filter by programming language: cpp, python, java
+    def filter_years(self, *year):
+        '''Filter by given years
         '''
-        self = self.loc[self['language'] == language]
-        return self
-
-    def filter_years(self, *years):
-        '''Filter by given years, comma seperated
-        '''
-        year_list = [item for item in years]
+        year_list = [item for item in year]
         self = self[self['year'].isin(year_list)]
         #self = self.loc[self['year'] == year]
         return self
@@ -72,5 +66,22 @@ class DataFilter(pd.DataFrame):
         '''
         gb = self.groupby(['task', 'username'])
         blocks = [data.sample(n=1) for _,data in gb]
+        #blocks = [data.iloc[-1] for _,data in gb]
         self = pd.concat(blocks)
+        return self
+
+    def truncate(self, min_samples):
+        '''Undersamples classes with more the the given min_samples
+        '''
+        self = self[self['username'].map(self['username'].value_counts()) > min_samples]
+        gb = self.groupby(['username'])
+        blocks = [data.sample(n=min_samples) for _,data in gb]
+        self = pd.concat(blocks)
+        return self
+
+    def filter_languages(self, *languages):
+        '''Filter by given languages
+        '''
+        language_list = [item for item in languages]
+        self = self[self['language'].isin(language_list)]
         return self
