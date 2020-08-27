@@ -9,4 +9,3 @@ black
 yapf
 python-gitlab
 twine
-random
