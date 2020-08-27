@@ -66,7 +66,7 @@ def series_to_tokens(X):
 
 def prep_X_y(X, y, pad_len=1000):
     #prepare X
-    X = X.apply(series_to_tokens)
+    X = series_to_tokens(X)
 
     #split the data
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3)
@@ -87,6 +87,8 @@ def prep_X_y(X, y, pad_len=1000):
     s = X_train_pad.shape
 
     #prepare y
+    y_train = y_train.tolist()
+    y_test = y_test.tolist()
     y_train, new_y_test = y_tokens(y_train, y_test)
     user_train = token_y(y_train, user_to_id)
     user_test = token_y(new_y_test, user_to_id)
