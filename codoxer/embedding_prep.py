@@ -5,7 +5,7 @@ from sklearn.model_selection import train_test_split
 from tensorflow.keras.preprocessing.sequence import pad_sequences
 from tensorflow.keras.utils import to_categorical
 
-def dictionary_ids(X)
+def dictionary_ids(X):
     '''takes in a list of words
     returns a dictionay assigning an id to each word'''
     word_to_id = {}
@@ -15,7 +15,7 @@ def dictionary_ids(X)
             if word not in word_to_id:
                 word_to_id[word] = i
                 i+=1
-      return word_to_id
+    return word_to_id
 
 def dictionary_target(y):
     user_to_id = {'unseen_word': 0}
@@ -49,27 +49,40 @@ def y_tokens(y_train, y_test):
 
 def token_y(y, dictionary):
     token = []
-    for item in sentence:
+    for item in y:
         if item in dictionary:
             token.append(dictionary[item])
     return token
 
+def string_to_token(X):
+    X = X[2:-2]
+    X = X.split("\', \'")
+    return X
+
+def series_to_tokens(X):
+    X = X.apply(string_to_token)
+    return X
+
 
 def prep_X_y(X, y, pad_len=1000):
+    #prepare X
+    X = X.apply(series_to_tokens)
+
     #split the data
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3)
 
-    #prepare a dictionary
+    #prepare a dictionary for X and y
     word_to_id = dictionary_ids(X_train)
     vocab_size = len(word_to_id)
+    user_to_id = dictionary_target(y_train)
 
     #convert words to ids
-    token_train = tokens(X_train_t, word_to_id)
-    token_test = tokens(X_test_t, word_to_id)
+    token_train = tokens(X_train, word_to_id)
+    token_test = tokens(X_test, word_to_id)
 
     #pad X
-    X_train_pad = pad_sequences(X_train, maxlen=pad_len)
-    X_test_pad = pad_sequences(X_test, maxlen=pad_len)
+    X_train_pad = pad_sequences(token_train, maxlen=pad_len)
+    X_test_pad = pad_sequences(token_test, maxlen=pad_len)
 
     s = X_train_pad.shape
 
