@@ -1,6 +1,6 @@
 import pandas as pd
 import random
-
+import os
 class DataBunch(object):
 
     ''' Loads and filters data based on filter arguments
@@ -28,25 +28,68 @@ class DataBunch(object):
 
     '''
 
-    def __init__(self, file_path, kwargs**):
+    def __init__(self, file_path, **kwargs):
 
+        data_list = []
         # Load data
-        self.data = pd.read_csv(file_path)
+        if os.path.isdir(file_path):
+            for file in os.listdir(file_path):
+                if file.endswith('.csv'):
+                    data_list.append(pd.read_csv(file))
+
+        else:
+            self.data = pd.read_csv(file_path)
 
         # Get params from kwargs
         self.languages = kwargs.get('languages', ['cpp', 'java', 'python'])
         self.top_n = kwargs.get('top_n', 10)
         self.one_sample = kwargs.get('one_sample', True)
-        self.years = kwargs.get('years', data['langauge'].unique())
+        self.years = kwargs.get('years', ['cpp', 'java', 'python'])
 
 
-    '''
+    """
     def filter_user(self, username):
         ''' Filter by one username
         '''
         self = self.loc[self['username'] == username]
         return self
-    '''
+    """
+
+    def clean_data(self):
+
+        if len(data_list) == 0:
+
+            if self.data['full_path'].value_counts()['NaN'] == 0:
+                self.data = self.data[['year','username', 'task', 'full_path', 'flines']]
+                self.data.loc[:, ['drop','language']] = self.data.full_path.str.split('.', expand=True)
+                self.data = self.data.drop(columns=['full_path', 'drop'])
+
+            else:
+                self.data = self.data[['year','username', 'task', 'file', 'flines']]
+                self.data.loc[:, ['drop','language']] = self.data.file.str.split('.', expand=True)
+                self.data = self.data.drop(columns=['file', 'drop'])
+
+            self.data.loc[:, 'language'] = self.data.language.str.lower()
+
+
+        else:
+            data_clean_list = []
+            for df in data_list:
+                if self.data['full_path'].value_counts()['NaN'] == 0:
+                    self.data = self.data[['year','username', 'task', 'full_path', 'flines']]
+                    self.data.loc[:, ['drop','language']] = self.data.full_path.str.split('.', expand=True)
+                    self.data = self.data.drop(columns=['full_path', 'drop'])
+
+                else:
+                    self.data = self.data[['year','username', 'task', 'file', 'flines']]
+                    self.data.loc[:, ['drop','language']] = self.data.file.str.split('.', expand=True)
+                    self.data = self.data.drop(columns=['file', 'drop'])
+                df.loc[:, 'language'] = df.language.str.lower()
+
+            self.data = pd.concat(data_clean_list)
+
+
+
     def filter_top(self, n):
         '''Filter by a given n of the users with the most samples, e.g. top 10
         '''
@@ -60,15 +103,15 @@ class DataBunch(object):
         self.data = self.data[self.data['year'].isin(year_list)]
 
 
-    '''
+    """
     def filter_n_greater_than(self, n):
         '''Filters and return only users with more samples than the given n
         '''
         self = self[self['username'].map(self['username'].value_counts()) > n]
         return self
-    '''
+    """
 
-    '''
+    """
     def select_random_users(self, n, minimum=100):
         '''Selects a random n number of users provided the have a minimum=number of samples
         '''
@@ -77,7 +120,7 @@ class DataBunch(object):
         sampled_list = random.sample(self.username_list, n)
         self = self[self['username'].isin(sampled_list)]
         return self
-    '''
+    """
 
 
     def make_oneone_sample(self):
@@ -90,7 +133,7 @@ class DataBunch(object):
         self.data = pd.concat(blocks)
 
 
-    '''
+    """
     def truncate(self, min_samples):
         '''Undersamples classes with more the the given min_samples
         '''
@@ -99,7 +142,7 @@ class DataBunch(object):
         blocks = [data.sample(n=min_samples) for _,data in gb]
         self = pd.concat(blocks)
         return self
-    '''
+    """
 
     def filter_languages(self, *languages):
         '''Filter by given languages
@@ -117,3 +160,6 @@ class DataBunch(object):
     def load_data():
         self.filter_data()
         return self.data
+
+if __name__ == '__main__':
+    df = DataBunch('data/gcj-dataset-master/gcj2020.csv')
