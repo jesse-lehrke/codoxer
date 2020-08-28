@@ -38,7 +38,7 @@ class CNN_model(object):
         self.X_test = data.features_test
         self.y_train = data.labels_train
         self.y_test = data.labels_test
-        self.input_shape = data.features_train.shape
+        self.input_shape = None
         self.classes = None
         self.model = None
 
@@ -54,11 +54,19 @@ class CNN_model(object):
         self.y_train = y_train_cat
         self.y_test = y_test_cat
 
+    def X_prep(self):
+        length = self.X_train.shape[0]
+        width = self.X_train.shape[1]
+        self.X_train = self.X_train.reshape(length, width, 1)
+        self.X_test = self.X_test.reshape(self.X_test.shape[0], self.X_test.shape[1], 1)
+        self.input_shape = self.X_train.shape
 
-    def init_model():
+
+    def init_model(self):
         '''initializes the model'''
 
         self.y_prep()
+        self.X_prep()
 
         model = models.Sequential()
 
@@ -90,5 +98,10 @@ class CNN_model(object):
         else:
             es = EarlyStopping(patience=5, restore_best_weights=True)
 
-            history = model.fit(self.X_train, self.y_train, validation_split=0.3, callbacks=[es], batch_size=16, epochs=50)
+            history = self.model.fit(self.X_train, self.y_train, validation_split=0.3, callbacks=[es], batch_size=16, epochs=50)
             return history
+
+
+    def evaluate_model(self):
+
+        self.model.evaluate(self.X_test, self.y_test)
