@@ -65,7 +65,7 @@ def series_to_tokens(X):
     return X
 
 
-def prep_X_y(X, y, pad_len=1000):
+def embedding_prep_X_y(X, y, pad_len=1000):
     #prepare X
     X = series_to_tokens(X)
 
