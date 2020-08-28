@@ -30,11 +30,12 @@ def tokens(sentence, dictionary):
     '''takes in a list of lists containing tokens
     returns a list of lists with matching ids'''
     token = []
+    vocab_size = len(dictionary)
     for item in sentence:
         sub_token = []
         for word in item:
             if word in dictionary:
-                sub_token.append(dictionary[word])
+                sub_token.append(dictionary[word]/vocab_size)
         token.append(sub_token)
     return token
 
