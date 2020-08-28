@@ -109,7 +109,7 @@ class DataBunch(object):
         '''Filter by a given n of the users with the most samples, e.g. top 10
         '''
         keeplist = self.data['username'].value_counts().index[:n].tolist()
-        self.data = self.data[self['username'].isin(keeplist)]
+        self.data = self.data[self.data['username'].isin(keeplist)]
 
     def filter_years(self, *year):
         '''Filter by given years
