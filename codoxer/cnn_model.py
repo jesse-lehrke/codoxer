@@ -27,7 +27,7 @@ def token_y(y, dictionary):
 class CNN_model(object):
 
     def __init__(self, data):
-        '''data is an instance of NB Class
+        '''data is an instance of Tfidf Class
         methods of NB to be called before instantiate CNN_model:
         train_test_split -> split data
         get_vectorizer -> initialize tfidf
