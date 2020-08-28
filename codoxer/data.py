@@ -30,7 +30,7 @@ class DataBunch(object):
 
     def __init__(self, file_path, **kwargs):
 
-        data_list = []
+        self.data_list = []
         # Load data
         if os.path.isdir(file_path):
             for file in os.listdir(file_path):
@@ -44,7 +44,7 @@ class DataBunch(object):
         self.languages = kwargs.get('languages', ['cpp', 'java', 'python'])
         self.top_n = kwargs.get('top_n', 10)
         self.one_sample = kwargs.get('one_sample', True)
-        self.years = kwargs.get('years', ['cpp', 'java', 'python'])
+        self.years = kwargs.get('years', [2020])
 
 
     """
@@ -57,36 +57,52 @@ class DataBunch(object):
 
     def clean_data(self):
 
-        if len(data_list) == 0:
 
-            if self.data['full_path'].value_counts()['NaN'] == 0:
+        # If path is a file only do for one file
+        if len(self.data_list) == 0:
+
+            # If no NaN in full path use full path column for extracting language
+            if self.data['full_path'].isna().sum() != len(list(self.data['full_path'])):
                 self.data = self.data[['year','username', 'task', 'full_path', 'flines']]
-                self.data.loc[:, ['drop','language']] = self.data.full_path.str.split('.', expand=True)
+                self.data[['drop','language']] = self.data.full_path.str.split('.', expand=True)
                 self.data = self.data.drop(columns=['full_path', 'drop'])
 
+            # Else use file columns for extracting language
             else:
                 self.data = self.data[['year','username', 'task', 'file', 'flines']]
-                self.data.loc[:, ['drop','language']] = self.data.file.str.split('.', expand=True)
+                print(self.data.file.str.split('.', expand=True))
+                self.data[['drop','language']] = self.data.file.str.split('.', expand=True)
                 self.data = self.data.drop(columns=['file', 'drop'])
 
             self.data.loc[:, 'language'] = self.data.language.str.lower()
 
-
+        # If path is directory do for each .csv file in path
         else:
             data_clean_list = []
             for df in data_list:
-                if self.data['full_path'].value_counts()['NaN'] == 0:
+
+                # If no NaN in full path use full path column for extracting language
+                if self.data['full_path'].isna().sum() != 0:
                     self.data = self.data[['year','username', 'task', 'full_path', 'flines']]
-                    self.data.loc[:, ['drop','language']] = self.data.full_path.str.split('.', expand=True)
+                    self.data[['drop','language']] = self.data.full_path.str.split('.', expand=True)
                     self.data = self.data.drop(columns=['full_path', 'drop'])
 
+                # Else use file columns for extracting language
                 else:
                     self.data = self.data[['year','username', 'task', 'file', 'flines']]
-                    self.data.loc[:, ['drop','language']] = self.data.file.str.split('.', expand=True)
+                    self.data[['drop','language']] = self.data.file.str.split('.', expand=True)
                     self.data = self.data.drop(columns=['file', 'drop'])
                 df.loc[:, 'language'] = df.language.str.lower()
 
             self.data = pd.concat(data_clean_list)
+
+            # Language remapping
+        python = ['py', 'python3', 'python', 'pypy2', 'ipynb']
+        cpp = ['cpp', 'cxx', 'cc', 'c++']
+
+        self.data.language = [x if x not in python else 'python' for x in self.data.language]
+        self.data.language = [x if x not in cpp else 'cpp' for x in self.data.language]
+
 
 
 
@@ -127,10 +143,11 @@ class DataBunch(object):
         '''Returns dataframe with 1 code sample per user per task.
         Warning: Long runtime posssible!
         '''
-        gb = self.data.groupby(['task', 'username'])
-        blocks = [data.sample(n=1) for _,data in gb]
-        #blocks = [data.iloc[-1] for _,data in gb]
-        self.data = pd.concat(blocks)
+        if self.one_sample:
+            gb = self.data.groupby(['task', 'username'])
+            blocks = [data.sample(n=1) for _,data in gb]
+            #blocks = [data.iloc[-1] for _,data in gb]
+            self.data = pd.concat(blocks)
 
 
     """
@@ -147,19 +164,23 @@ class DataBunch(object):
     def filter_languages(self, *languages):
         '''Filter by given languages
         '''
+        print(self.data.columns)
         language_list = [item for item in languages]
         self.data = self.data[self.data['language'].isin(language_list)]
 
 
-    def filter_data():
-        self.filter_years(years)
-        self.filter_languages(languages)
+    def filter_data(self):
+        #self.filter_years(self.years)
+        self.filter_languages(self.languages)
         self.make_oneone_sample()
-        self.filter_top(top_n)
+        self.filter_top(self.top_n)
 
-    def load_data():
+    def load_data(self):
+        self.clean_data()
         self.filter_data()
         return self.data
 
 if __name__ == '__main__':
     df = DataBunch('data/gcj-dataset-master/gcj2020.csv')
+    df.load_data()
+
