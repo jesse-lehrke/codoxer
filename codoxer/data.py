@@ -70,7 +70,6 @@ class DataBunch(object):
             # Else use file columns for extracting language
             else:
                 self.data = self.data[['year','username', 'task', 'file', 'flines']]
-                print(self.data.file.str.split('.', expand=True))
                 self.data[['drop','language']] = self.data.file.str.split('.', expand=True)
                 self.data = self.data.drop(columns=['file', 'drop'])
 
@@ -144,6 +143,7 @@ class DataBunch(object):
         Warning: Long runtime posssible!
         '''
         if self.one_sample:
+
             gb = self.data.groupby(['task', 'username'])
             blocks = [data.sample(n=1) for _,data in gb]
             #blocks = [data.iloc[-1] for _,data in gb]
@@ -161,11 +161,11 @@ class DataBunch(object):
         return self
     """
 
-    def filter_languages(self, *languages):
+    def filter_languages(self, language_list):
         '''Filter by given languages
         '''
-        print(self.data.columns)
-        language_list = [item for item in languages]
+
+        #language_list = [item for item in languages]
         self.data = self.data[self.data['language'].isin(language_list)]
 
 
