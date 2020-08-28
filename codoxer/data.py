@@ -1,6 +1,7 @@
 import pandas as pd
 import random
 import os
+import gc
 class DataBunch(object):
 
     ''' Loads and filters data based on filter arguments
@@ -130,18 +131,26 @@ class DataBunch(object):
         self.data.language = [x if x not in python else 'python' for x in self.data.language]
         self.data.language = [x if x not in cpp else 'cpp' for x in self.data.language]
 
-        #print(self.data)
+        self.data.dropna()
+        self.data['task'] = self.data.task.astype('category')
+
+        print('// Collecting Garbage...')
+        gc.collect()
+        print('Done.')
 
 
 
     def filter_top(self, n):
         '''Filter by a given n of the users with the most samples, e.g. top 10
+            !!! also fairly slow
         '''
         if self.verbose == 1:
             print(f'// Filtering top {self.top_n}...')
 
         keeplist = self.data['username'].value_counts().index[:n].tolist()
+
         self.data = self.data[self.data['username'].isin(keeplist)]
+
 
     def filter_years(self, *year):
         '''Filter by given years
@@ -151,6 +160,10 @@ class DataBunch(object):
 
         year_list = [item for item in year]
         self.data = self.data[self.data['year'].isin(year_list)]
+
+        print('// Collecting Garbage...')
+        gc.collect()
+        print('Done.')
 
 
     """
@@ -179,16 +192,30 @@ class DataBunch(object):
         '''
         if self.one_sample:
 
+            # Verbose output
             if self.verbose == 1:
                 print('// Choosing one sample per task...')
 
 
-            gb = self.data.groupby(['task', 'username'])
+            # groupby
+            #gb = self.data.groupby(['task', 'username'])
+            #print('groupy done')
+
+            # use last code for user for task -> slow
             #blocks = [data.sample(n=1) for _,data in gb]
-            blocks = [data.iloc[-1] for _,data in gb]
-            self.data = pd.concat(blocks)
+            #blocks = [data.iloc[-1] for _,data in gb]
+            #print('picking last code done')
+
+            # Concat
+            #self.data = pd.concat(blocks)
+            #print('concat done')
 
 
+            self.data = pd.concat([data.sample(n=1) for _,data in self.data.groupby(['task', 'username'])])
+
+            print('// Collecting Garbage...')
+            gc.collect()
+            print('Done.')
     """
     def truncate(self, min_samples):
         '''Undersamples classes with more the the given min_samples
