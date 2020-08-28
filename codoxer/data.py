@@ -211,7 +211,7 @@ class DataBunch(object):
             #print('concat done')
 
 
-            self.data = pd.concat([data.sample(n=1) for _,data in self.data.groupby(['task', 'username'])])
+            self.data = pd.concat([data.iloc[[-1]] for _,data in self.data.groupby(['task', 'username'])])
 
             print('// Collecting Garbage...')
             gc.collect()
