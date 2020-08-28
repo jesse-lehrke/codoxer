@@ -210,8 +210,15 @@ class DataBunch(object):
             #self.data = pd.concat(blocks)
             #print('concat done')
 
+            tracker = 0
+            def print_and_return(command):
+                print(tracker)
+                tracker += 1
+                return command
 
-            self.data = pd.concat([data.iloc[[-1]] for _,data in self.data.groupby(['task', 'username'])])
+            gb = self.data.groupby(['task', 'username'])
+            bunch = [print_and_return(data.iloc[[-1]]) for _,data in gb]
+            self.data = pd.concat(bunch)
 
             print('// Collecting Garbage...')
             gc.collect()
