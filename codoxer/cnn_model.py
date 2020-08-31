@@ -104,6 +104,54 @@ class CNN_model(object):
         self.model = model
 
 
+    def init_rnn_model(self, loss='categorical_crossentropy', optim='rmsprop', metrics=['accuracy']):
+        '''initializes the model'''
+
+        self.y_prep()
+        self.X_prep()
+
+        model = models.Sequential()
+
+        model.add(layers.SimpleRNN(units=16, activation='tanh'))
+
+        model.add(layers.Dense(self.classes, activation=self.activation[2]))
+        model.compile(loss=loss, optimizer=optim, metrics=metrics)
+
+        self.model = model
+
+
+    def init_lstm_model(self, loss='categorical_crossentropy', optim='rmsprop', metrics=['accuracy']):
+        '''initializes the model'''
+
+        self.y_prep()
+        self.X_prep()
+
+        model = models.Sequential()
+
+        model.add(layers.LSTM(units=16, activation='tanh'))
+
+        model.add(layers.Dense(self.classes, activation=self.activation[2]))
+        model.compile(loss=loss, optimizer=optim, metrics=metrics)
+
+        self.model = model
+
+
+    def init_gru_model(self, loss='categorical_crossentropy', optim='rmsprop', metrics=['accuracy']):
+        '''initializes the model'''
+
+        self.y_prep()
+        self.X_prep()
+
+        model = models.Sequential()
+
+        model.add(layers.GRU(units=16, activation='tanh'))
+
+        model.add(layers.Dense(self.classes, activation=self.activation[2]))
+        model.compile(loss=loss, optimizer=optim, metrics=metrics)
+
+        self.model = model
+
+
     def model_summary(self):
         '''prints the model summary'''
 
