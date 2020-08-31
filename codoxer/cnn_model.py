@@ -41,6 +41,8 @@ class CNN_model(object):
         self.input_shape = None
         self.classes = None
         self.model = None
+        self.activation = ['relu', 'softmax']
+        self.es = callbacks.EarlyStopping(patience = 30, monitor = 'loss', restore_best_weights = True)
 
 
     def y_prep(self):
@@ -61,8 +63,22 @@ class CNN_model(object):
         self.X_test = self.X_test.reshape(self.X_test.shape[0], self.X_test.shape[1], 1)
         self.input_shape = self.X_train.shape
 
+    def define_activations(self, *activations):
+        ''' Define activation layers in the order of the layer for your model
+        '''
+        self.activation = [item for item in activations]
+        if len(self.activation) != 2:
+            print('Please enter 2 activations')
+            pass
+        return self.activation
 
-    def init_model(self):
+    def early_stopping(self, patience=30, monitor='loss', restore_best_weights=True):
+        ''' Defaults are patience=30, monitor='loss', restore_best_weights=True
+        '''
+        self.es = callbacks.EarlyStopping(patience = patience, monitor = monitor, restore_best_weights = restore_best_weights)
+
+
+    def init_model(self, optim='adam'):
         '''initializes the model'''
 
         self.y_prep()
@@ -70,13 +86,13 @@ class CNN_model(object):
 
         model = models.Sequential()
 
-        model.add(layers.Conv1D(filters=8, kernel_size=8, activation='relu'))
+        model.add(layers.Conv1D(filters=8, kernel_size=8, activation=self.activation[0]))
         model.add(layers.MaxPooling1D(pool_size=16))
 
         model.add(layers.Flatten())
 
-        model.add(layers.Dense(self.classes, activation='softmax'))
-        model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
+        model.add(layers.Dense(self.classes, activation=self.activation[1]))
+        model.compile(loss='categorical_crossentropy', optimizer=optim, metrics=['accuracy'])
 
         self.model = model
 
@@ -91,14 +107,13 @@ class CNN_model(object):
             print(self.model.summary())
 
 
-    def model_fit(self):
+    def model_fit(self, validation_split=.2, epochs=50, batch_size=16):
         '''fits the model'''
         if self.model == None:
             print('model needs to be trained')
         else:
-            es = EarlyStopping(patience=5, restore_best_weights=True)
 
-            history = self.model.fit(self.X_train, self.y_train, validation_split=0.3, callbacks=[es], batch_size=16, epochs=50)
+            history = self.model.fit(self.X_train, self.y_train, validation_split=validation_split, callbacks=[self.es], batch_size=batch_size, epochs=epochs)
             return history
 
 
