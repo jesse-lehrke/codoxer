@@ -19,7 +19,7 @@ if __name__ == '__main__':
     parser.add_argument('code', help = 'code for which the author is to be predicted')
     parser.add_argument('-v', '--verbose', help = 'make output verbose', action = 'store_true')
     parser.add_argument('-p', '--probability', help = 'return probability of prediction', action = 'store_true')
-    parser.add_argument('-n', '--n_best', type = int, choices = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10], help = 'return n most likely authors (best to combine with -p to get probabilities)')
+    parser.add_argument('-n', '--n_best', type = int, choices = range(1,11), default = 1, help = 'return n most likely authors (best to combine with -p to get probabilities)')
 
     args = parser.parse_args()
     print(args)
@@ -36,3 +36,6 @@ if __name__ == '__main__':
     tokenizer = CxxTokenizer()
 
     code_tokenized = tokenizer.fit_transform(code)
+
+
+    # Run through Tf-Idf
