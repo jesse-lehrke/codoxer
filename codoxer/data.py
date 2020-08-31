@@ -210,14 +210,15 @@ class DataBunch(object):
             #self.data = pd.concat(blocks)
             #print('concat done')
 
-            tracker = 0
+            self.max_c = self.data.username.nunique()*21*12
+            self.tracker = 0
             def print_and_return(command):
-                print(tracker)
-                tracker += 1
+                print(f'{self.tracker} of {self.max_c} ({self.tracker/self.max_c*100} %)')
+                self.tracker += 1
                 return command
 
             gb = self.data.groupby(['task', 'username'])
-            bunch = [print_and_return(data.iloc[[-1]]) for _,data in gb]
+            bunch = [data.iloc[[-1]] for _,data in gb]
             self.data = pd.concat(bunch)
 
             print('// Collecting Garbage...')
