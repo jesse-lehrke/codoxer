@@ -37,6 +37,14 @@ class TopNPicker(BaseEstimator, TransformerMixin):
 
 class CxxTokenizer(BaseEstimator, TransformerMixin):
     def __init__(self):
+        pass
+
+    def fit(self, X, y = None):
+        return self
+
+    def transform(self, X, y = None):
+        print('transform()')
+
         if not os.path.exists('./data/'):
             os.makedirs('./data/')
         if not os.path.exists('./data/output'):
@@ -44,10 +52,7 @@ class CxxTokenizer(BaseEstimator, TransformerMixin):
         if not os.path.exists('./data/input'):
             os.makedirs('./data/input')
 
-    def fit(self, X, y = None):
-        return self
 
-    def transform(self, X, y = None):
         i = 0
         for row in X:
             if i > len(X):
@@ -64,6 +69,8 @@ class CxxTokenizer(BaseEstimator, TransformerMixin):
             os.system(cmd)
 
         my_dir_path = "./data/output"
+
+
 
         results = []
         for file in Path(my_dir_path).iterdir():
@@ -104,6 +111,10 @@ if __name__ == '__main__':
 
     from sklearn.compose import ColumnTransformer
 
+    print('line 110')
     ct = ColumnTransformer([('token', CxxTokenizer(), 'flines')])
-
-    print(ct.fit(data).transform(data))
+    print('line 112')
+    ct = ct.fit(data)
+    print('line 114')
+    data_out = ct.transform(data)
+    print(data_out)
