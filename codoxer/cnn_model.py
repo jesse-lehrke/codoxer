@@ -41,17 +41,18 @@ class CNN_model(object):
         self.input_shape = None
         self.classes = None
         self.model = None
-        self.activation = ['relu', 'softmax']
+        self.activation = ['relu', 'relu', 'softmax']
         self.es = callbacks.EarlyStopping(patience = 30, monitor = 'loss', restore_best_weights = True)
 
 
     def y_prep(self):
+        index = len(self.y_train)
         y = pd.concat([self.y_train, self.y_test])
         user_to_id = dictionary_target(y)
         y_t = token_y(y, user_to_id)
         y_cat = to_categorical(y_t)
-        y_train_cat = y_cat[:9240]
-        y_test_cat = y_cat[9240:]
+        y_train_cat = y_cat[:index]
+        y_test_cat = y_cat[index:]
         self.classes = y_train_cat.shape[1]
         self.y_train = y_train_cat
         self.y_test = y_test_cat
@@ -67,8 +68,8 @@ class CNN_model(object):
         ''' Define activation layers in the order of the layer for your model
         '''
         self.activation = [item for item in activations]
-        if len(self.activation) != 2:
-            print('Please enter 2 activations')
+        if len(self.activation) != 3:
+            print('Please enter 3 activations')
             pass
         return self.activation
 
@@ -78,7 +79,7 @@ class CNN_model(object):
         self.es = callbacks.EarlyStopping(patience = patience, monitor = monitor, restore_best_weights = restore_best_weights)
 
 
-    def init_model(self, optim='adam'):
+    def init_model(self, loss='categorical_crossentropy', optim='adam', metrics=['accuracy']):
         '''initializes the model'''
 
         self.y_prep()
@@ -86,13 +87,19 @@ class CNN_model(object):
 
         model = models.Sequential()
 
-        model.add(layers.Conv1D(filters=8, kernel_size=8, activation=self.activation[0]))
+        model.add(layers.Conv1D(filters=32, kernel_size=8, activation=self.activation[0]))
         model.add(layers.MaxPooling1D(pool_size=16))
-
         model.add(layers.Flatten())
+        model.add(layers.Dense(256, activation=self.activation[1]))
+        model.add(layers.Dropout(.3))
 
-        model.add(layers.Dense(self.classes, activation=self.activation[1]))
-        model.compile(loss='categorical_crossentropy', optimizer=optim, metrics=['accuracy'])
+        #model.add(layers.Conv1D(filters=8, kernel_size=8, activation=self.activation[0]))
+        #model.add(layers.MaxPooling1D(pool_size=16))
+
+        #model.add(layers.Flatten())
+
+        model.add(layers.Dense(self.classes, activation=self.activation[2]))
+        model.compile(loss=loss, optimizer=optim, metrics=metrics)
 
         self.model = model
 
