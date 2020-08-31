@@ -6,10 +6,10 @@ from tensorflow.keras import layers
 from tensorflow.keras.utils import to_categorical
 from tensorflow.keras.callbacks import EarlyStopping
 
-#from codoxer.embedding_prep import dictionary_target, token_y
+from codoxer.utils import dictionary_target, token_y, inverse_dict
 
 
-def dictionary_target(y):
+'''def dictionary_target(y):
     user_to_id = {'unseen_word': 0}
     i = 1
     for item in y:
@@ -29,7 +29,7 @@ def token_y(y, dictionary):
     for item in y:
         if item in dictionary:
             token.append(dictionary[item])
-    return token
+    return token'''
 
 
 class CNN_model(object):
