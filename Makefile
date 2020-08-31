@@ -3,6 +3,15 @@
 # ----------------------------------
 install_requirements:
 	@pip install -r requirements.txt
+	@make get_tokenizer
+
+get_tokenizer:
+	@curl -L https://github.com/dspinellis/tokenizer/archive/master.zip > master.zip
+	@tar xvf master.zip
+	@rm master.zip
+	@cd tokenizer-master/src; make; make install
+	@rm -rf tokenizer-master
+
 
 check_code:
 	@flake8 scripts/* codoxer/*.py
