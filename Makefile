@@ -10,6 +10,7 @@ get_tokenizer:
 	@tar xvf master.zip
 	@rm master.zip
 	@cd tokenizer-master/src; make; make install
+	@rm -rf tokenizer-master
 
 
 check_code:
