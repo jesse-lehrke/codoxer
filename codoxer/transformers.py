@@ -19,7 +19,7 @@ class LanguagePicker(BaseEstimator, TransformerMixin):
     def transform(self, X, y = None):
         return X[['language'].isin(language_list)]
 
-
+'''
 class TopNPicker(BaseEstimator, TransformerMixin):
 
     def __init__(self, top_n):
@@ -33,6 +33,7 @@ class TopNPicker(BaseEstimator, TransformerMixin):
             keeplist = y['username'].value_counts().index[:n].tolist()
             self = self[self['username'].isin(keeplist)]
             return self
+'''
 
 class CxxTokenizer(BaseEstimator, TransformerMixin):
     def __init__(self):
@@ -46,9 +47,9 @@ class CxxTokenizer(BaseEstimator, TransformerMixin):
     def fit(self, X, y = None):
         return self
 
-    def transform(self, X, y = None)
+    def transform(self, X, y = None):
         i = 0
-        for row in X
+        for row in X:
             if i > len(X):
                 break
             else:
@@ -92,5 +93,17 @@ class CxxTokenizer(BaseEstimator, TransformerMixin):
         #df_4.rename(columns={'text':'tokens'},
         #         inplace=True)
         #self.data = df_4.to_csv('./data/tokens.csv')
-
+        print(token_x.shape)
+        token_x = np.reshape(token_x, (token_x.shape[0], 1))
+        print(token_x.shape)
         return token_x
+
+if __name__ == '__main__':
+
+    data = pd.read_csv('data/coder_data_prepped.csv')
+
+    from sklearn.compose import ColumnTransformer
+
+    ct = ColumnTransformer([('token', CxxTokenizer(), 'flines')])
+
+    print(ct.fit(data).transform(data))
