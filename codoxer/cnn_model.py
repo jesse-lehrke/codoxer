@@ -42,7 +42,7 @@ class CNN_model(object):
         self.classes = None
         self.model = None
         self.activation = ['relu', 'relu', 'softmax']
-        self.es = callbacks.EarlyStopping(patience = 30, monitor = 'loss', restore_best_weights = True)
+        self.es = EarlyStopping(patience = 30, monitor = 'loss', restore_best_weights = True)
 
 
     def y_prep(self):
@@ -76,7 +76,7 @@ class CNN_model(object):
     def early_stopping(self, patience=30, monitor='loss', restore_best_weights=True):
         ''' Defaults are patience=30, monitor='loss', restore_best_weights=True
         '''
-        self.es = callbacks.EarlyStopping(patience = patience, monitor = monitor, restore_best_weights = restore_best_weights)
+        self.es = EarlyStopping(patience = patience, monitor = monitor, restore_best_weights = restore_best_weights)
 
 
     def init_model(self, loss='categorical_crossentropy', optim='adam', metrics=['accuracy']):
