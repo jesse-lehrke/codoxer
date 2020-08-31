@@ -2,9 +2,7 @@
 # -*- coding: utf-8 -*-
 
 # Import from the standard library
-from os.path import split
 import argparse
-import pandas as pd
 
 # Import from codoxer
 import codoxer
@@ -39,3 +37,4 @@ if __name__ == '__main__':
 
 
     # Run through Tf-Idf
+    tfidf = codoxer.models.load_tfidf()
