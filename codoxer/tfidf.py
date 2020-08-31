@@ -15,6 +15,7 @@ class Tfidf(object):
         self.y = df.username
         self.vocabulary = None
         self.features_train = None
+        self.vectorizer = None
 
     def train_test_split(self, test_s=.3):
         '''train test split function
@@ -41,12 +42,15 @@ class Tfidf(object):
             print('Running train_test_split first with default values')
             self.train_test_split()
             print(f"Complete... fitting and transforming: {round(time()-t0, 3)}s")
-        else:
-            t0 = time()
-            self.features_train = self.vectorizer.fit_transform(self.features_train) #partial_fit
-            self.features_test = self.vectorizer.transform(self.features_test)
-            self.vocabulary = self.vectorizer.get_feature_names()
-            print(f"Fit and transform complete time: {round(time()-t0, 3)}s")
+
+        if self.vectorizer is None:
+            self.get_vectorizer()
+
+        t0 = time()
+        self.features_train = self.vectorizer.fit_transform(self.features_train) #partial_fit
+        self.features_test = self.vectorizer.transform(self.features_test)
+        self.vocabulary = self.vectorizer.get_feature_names()
+        print(f"Fit and transform complete time: {round(time()-t0, 3)}s")
 
         selector = SelectPercentile(f_classif, percentile=reduce)
         selector.fit(self.features_train, self.labels_train)
