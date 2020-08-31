@@ -1,3 +1,6 @@
+import pandas as pd
+import numpy as np
+
 from tensorflow.keras import models
 from tensorflow.keras import layers
 from tensorflow.keras.utils import to_categorical
