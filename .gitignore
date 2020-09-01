@@ -10,4 +10,5 @@ groupama/data/base_pno.*
 .DS_Store
 .idea/
 codoxer/data
+codoxer/models
 notebooks

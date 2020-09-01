@@ -8,20 +8,27 @@ import pandas as pd
 
 # Import from codoxer
 import codoxer
-from codoxer.lib import clean_data
+from codoxer.transformers import CxxTokenizer
 
 if __name__ == '__main__':
-    usage = '%(prog)s'
-    description = 'codoxer_description'
+    usage = 'code for which author is to be predicted'
+    description = 'code'
     # https://docs.python.org/3/library/argparse.html
     # https://docs.python.org/3/howto/argparse.html
-    parser = argparse.ArgumentParser(description=description, usage=usage)
-    args = parser.parse_args()
-    folder_source, _ = split(codoxer.__file__)
-    df = pd.read_csv('{}/data/data.csv.gz'.format(folder_source))
-    print('  codoxer/data/data.csv.gz Loaded')
+    parser = argparse.ArgumentParser()
+    parser.add_argument(description, help = usage)
 
-    res = clean_data(df)
-    res.to_csv('out.csv', index=False)
-    print('==> out.csv MADE ')
-    print('    shape is {}'.format(res.shape))
+    args = parser.parse_args()
+
+    file = args.code
+
+
+    # open file
+    with open(file, 'r') as open_file:
+        code = open_file.read()
+
+
+    # Tokenize code
+    tokenizer = CxxTokenizer()
+
+    code_tokenized = tokenizer.fit_transform(code)
