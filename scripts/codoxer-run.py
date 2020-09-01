@@ -57,6 +57,7 @@ if __name__ == '__main__':
         print('// DONE')
 
 
+
     # Run through Tf-Idf
 
     if args.verbose == True:
@@ -68,12 +69,27 @@ if __name__ == '__main__':
     if args.verbose == True:
         print('DONE')
 
+
+
+    # Run through Selector
+
+    if args.verbose == True:
+        print('// Running Percentil Selector...')
+
+    selector = models.load_selector()
+    code_selected = selector.transform([code_tfidf])
+
+    if args.verbose == True:
+        print('DONE')
+
+
+
     # Run trough CNN
     if args.verbose == True:
         print('// Computing prediction...')
 
     cnn = models.load_cnn()
-    print(cnn.predict(code_tfidf))
+    print(cnn.predict(code_selected))
 
     if args.verbose == True:
         print('// DONE...')
