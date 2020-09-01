@@ -53,15 +53,16 @@ class CxxTokenizer(BaseEstimator, TransformerMixin):
                 file.write(X)
 
             # Execute tokenizer in command line
-            cmd = 'tokenizer -l C++ -t c ./data/input/code.txt > ./data/output/code'
+            cmd = 'tokenizer -l C++ -t c ./code.txt > ./code0.txt'
             os.system(cmd)
 
             # Read tokenized text from file
             out = ''
-            with open('code.txt', 'r') as file:
-                out = file.read
+            with open('code0.txt', 'r') as file:
+                out = file.read()
 
             # Cleanup
+            os.remove('code0.txt')
             os.remove('code.txt')
 
             return out
@@ -128,14 +129,11 @@ class CxxTokenizer(BaseEstimator, TransformerMixin):
 
 if __name__ == '__main__':
 
-    data = pd.read_csv('data/coder_data_prepped.csv')
+    path = 'data/my_code.cpp'
 
-    from sklearn.compose import ColumnTransformer
+    with open(path, 'r') as file:
 
-    print('line 110')
-    ct = ColumnTransformer([('token', CxxTokenizer(), 'flines')])
-    print('line 112')
-    ct = ct.fit(data)
-    print('line 114')
-    data_out = ct.transform(data)
-    print(data_out)
+        tok = CxxTokenizer().fit(None)
+        out = tok.transform(file.read())
+        print(out)
+
