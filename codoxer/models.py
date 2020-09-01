@@ -10,6 +10,10 @@ def load_tfidf():
     path = Path(__file__).parent / 'models/tfidf'
     return joblib.load(path)
 
+def load_selector():
+    path = Path(__file__).parent / 'models/selector'
+    return joblib.load(path)
+
 def load_cnn():
     path = Path(__file__).parent / 'models/trained_model'
     return tf.keras.models.load_model(path)
