@@ -43,7 +43,7 @@ class CxxTokenizer(BaseEstimator, TransformerMixin):
         return self
 
     def transform(self, X, y = None):
-        print('transform()')
+        #print('transform()')
 
         # If input is a single tring -> when called from command line
         if isinstance(X, str):
