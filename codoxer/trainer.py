@@ -1,6 +1,7 @@
 from codoxer.transformers import CxxTokenizer
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.feature_selection import SelectPercentile, f_classif
+from sklearn.exceptions import NotFittedError
 from tensorflow.keras import models
 from tensorflow.keras import layers
 from tensorflow.keras.utils import to_categorical
@@ -58,5 +59,7 @@ class CodoxerModel(BaseEstimator):
         return self.user_to_id[preds.argmax()]
 
     def predict_proba(self, X):
-        pass
+        if self.user_to_id is None:
+            raise NotFittedError('Model not fitted. Fit with CodoxerModel.fit(X, y).')
+
 
