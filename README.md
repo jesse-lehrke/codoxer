@@ -1,70 +1,36 @@
-# Data analysis
-- Document here the project: codoxer
-- Description: Project Description
-- Data Source:
-- Type of analysis:
+# Description
+This package contains a model trained on code samples from the Google Code Jam Data
+(see repo) to predict the author of a given code sample.
 
-Please document the project the better you can.
+It consists of a command line tool that can predict any new code sample by written
+by one of the Google Code Jam participants (see usage below).
 
-# Stratup the project
+Also included is a Trainer class that contains the architecture of the model. It
+allows to retrain the model with any new data (see instructions below).
 
-The initial setup.
-
-Create virtualenv and install the project:
+# Installation
+- Downlaod repo
+- Navigate to folder (codoxer) containing Makefile in Terminal
+- Run:
 ```bash
-  $ sudo apt-get install virtualenv python-pip python-dev
-  $ deactivate; virtualenv ~/venv ; source ~/venv/bin/activate ;\
-    pip install pip -U; pip install -r requirements.txt
+    $ make install
 ```
 
-Unittest test:
+# Usage
+
+To predict code from one of the Google Code Jam participants:
+- Navigate to folder containing code file in Terminal
+- Run:
 ```bash
-  $ make clean install test
+    $ codoxer-run <file>
 ```
 
-Check for codoxer in gitlab.com/{group}.
-If your project is not set please add it:
+# Retraining
 
-- Create a new project on `gitlab.com/{group}/codoxer`
-- Then populate it:
+The package contains a pipeline for the model that ca be used to retrain it on
+new data. The data as to be in the following form:
 
-```bash
-  $ ##   e.g. if group is "{group}" and project_name is "codoxer"
-  $ git remote add origin git@gitlab.com:{group}/codoxer.git
-  $ git push -u origin master
-  $ git push -u origin --tags
-```
+include here
 
-Functionnal test with a script:
-```bash
-  $ cd /tmp
-  $ codoxer-run
-```
-# Install
-Go to `gitlab.com/{group}/codoxer` to see the project, manage issues,
-setup you ssh public key, ...
-
-Create a python3 virtualenv and activate it:
-```bash
-  $ sudo apt-get install virtualenv python-pip python-dev
-  $ deactivate; virtualenv -ppython3 ~/venv ; source ~/venv/bin/activate
-```
-
-Clone the project and install it:
-```bash
-  $ git clone gitlab.com/{group}/codoxer
-  $ cd codoxer
-  $ pip install -r requirements.txt
-  $ make clean install test                # install and test
-```
-Functionnal test with a script:
-```bash
-  $ cd /tmp
-  $ codoxer-run
-``` 
-
-# Continus integration
-## Github 
-Every push of `master` branch will execute `.github/workflows/pythonpackages.yml` docker jobs.
-## Gitlab
-Every push of `master` branch will execute `.gitlab-ci.yml` docker jobs.
+The class codoxer.Train() can then be trained using codoxer.Train.fit().
+Afterwards predictions can be made with codoxer.Train.predict().
