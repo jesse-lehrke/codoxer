@@ -5,7 +5,7 @@
 import argparse
 
 # Import from codoxer
-import codoxer
+from codoxer import models
 from codoxer.transformers import CxxTokenizer
 
 if __name__ == '__main__':
@@ -29,6 +29,9 @@ if __name__ == '__main__':
     with open(file, 'r') as open_file:
         code = open_file.read()
 
+    # Check for correct input
+
+    print('')
 
     # Tokenize code
     tokenizer = CxxTokenizer()
@@ -37,4 +40,9 @@ if __name__ == '__main__':
 
 
     # Run through Tf-Idf
-    tfidf = codoxer.models.load_tfidf()
+    tfidf = models.load_tfidf()
+
+
+    # Run trough CNN
+    cnn = model.load_cnn()
+
