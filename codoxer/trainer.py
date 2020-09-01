@@ -54,7 +54,9 @@ class CodoxerModel(BaseEstimator):
 
 
     def predict(self, X):
-        pass
+        preds = self.predict_proba(X)
+        return self.user_to_id[preds.argmax()]
 
     def predict_proba(self, X):
         pass
+
