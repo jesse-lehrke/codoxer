@@ -26,7 +26,7 @@ class CodoxerModel(BaseEstimator):
     def fit(self, X, y):
 
         # Tokenize
-        X = tokenizer.fit(X, y)
+        X = self.tokenizer.fit(X, y)
 
         # Tfidf
         X = self.tfidf.fit_transform(X, y)
@@ -61,5 +61,14 @@ class CodoxerModel(BaseEstimator):
     def predict_proba(self, X):
         if self.user_to_id is None:
             raise NotFittedError('Model not fitted. Fit with CodoxerModel.fit(X, y).')
+
+        X = self.tokenizer.transform(X)
+
+        X = self.tfidf.transform(X)
+
+        X = self.selector.transform(X)
+
+        return self.estimator.predict(X)
+
 
 
