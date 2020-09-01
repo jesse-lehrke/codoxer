@@ -17,6 +17,8 @@ class Tfidf(object):
 
 if __name__ == '__main__':
 
+
+
     # Arguemtn parser duh
     parser = argparse.ArgumentParser()
 
@@ -33,24 +35,47 @@ if __name__ == '__main__':
 
 
     # open file
+    if args.verbose == True:
+        print('// Loading data...')
     with open(file, 'r') as open_file:
         code = open_file.read()
+    if args.verbose == True:
+        print('// DONE')
+
 
     # Check for correct input
 
-    print('')
-
     # Tokenize code
+    if args.verbose == True:
+        print('// Tokenizing...')
+
     tokenizer = CxxTokenizer()
 
     code_tokenized = tokenizer.fit_transform(code)
 
+    if args.verbose == True:
+        print('// DONE')
+
 
     # Run through Tf-Idf
+
+    if args.verbose == True:
+        print('// Running Tf-Idf...')
+
     tfidf = models.load_tfidf()
-    code_tfidf = tfidf.vocabulary_
+    code_tfidf = tfidf.transform([code_tokenized])
+
+    if args.verbose == True:
+        print('DONE')
 
     # Run trough CNN
-    cnn = model.load_cnn()
+    if args.verbose == True:
+        print('// Computing prediction...')
+
+    cnn = models.load_cnn()
     print(cnn.predict(code_tfidf))
+
+    if args.verbose == True:
+        print('// DONE...')
+
 
