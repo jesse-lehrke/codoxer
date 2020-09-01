@@ -1,9 +1,12 @@
+import pandas as pd
+import numpy as np
+
 from tensorflow.keras import models
 from tensorflow.keras import layers
 from tensorflow.keras.utils import to_categorical
 from tensorflow.keras.callbacks import EarlyStopping
 
-from codoxer.embedding_prep import dictionary_target, token_y
+from codoxer.utils import dictionary_target, token_y, inverse_dict
 
 
 '''def dictionary_target(y):
@@ -14,6 +17,11 @@ from codoxer.embedding_prep import dictionary_target, token_y
             user_to_id[item] = i
             i+=1
     return user_to_id
+
+
+def inverse_dict(dictonary):
+    inv_dict = {v: k for k, v in dictonary.items()}
+    return inv_dict
 
 
 def token_y(y, dictionary):
@@ -43,12 +51,14 @@ class CNN_model(object):
         self.model = None
         self.activation = ['relu', 'relu', 'softmax']
         self.es = EarlyStopping(patience = 30, monitor = 'loss', restore_best_weights = True)
+        self.id_to_user = None
 
 
     def y_prep(self):
         index = len(self.y_train)
         y = pd.concat([self.y_train, self.y_test])
         user_to_id = dictionary_target(y)
+        self.id_to_user = inverse_dict(user_to_id)
         y_t = token_y(y, user_to_id)
         y_cat = to_categorical(y_t)
         y_train_cat = y_cat[:index]

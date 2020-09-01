@@ -26,6 +26,10 @@ def dictionary_target(y):
             i+=1
     return user_to_id
 
+def inverse_dict(dictonary):
+    inv_dict = {v: k for k, v in dictonary.items()}
+    return inv_dict
+
 def tokens(sentence, dictionary):
     '''takes in a list of lists containing tokens
     returns a list of lists with matching ids'''
