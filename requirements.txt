@@ -9,3 +9,4 @@ black
 yapf
 python-gitlab
 twine
+scikit-learn>=0.22.2
