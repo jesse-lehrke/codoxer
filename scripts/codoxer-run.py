@@ -3,7 +3,9 @@
 
 # Import from the standard library
 import argparse
-
+import numpy as np
+import tensorflow as tf
+import scipy
 
 # Import from codoxer
 from codoxer import models
@@ -67,7 +69,7 @@ if __name__ == '__main__':
     code_tfidf = tfidf.transform([code_tokenized])
 
     if args.verbose == True:
-        print('DONE')
+        print('// DONE')
 
 
 
@@ -76,11 +78,16 @@ if __name__ == '__main__':
     if args.verbose == True:
         print('// Running Percentil Selector...')
 
+    code_tfidf = code_tfidf.reshape(1,-1)
+
+    print(type(code_tfidf))
+    print(code_tfidf.shape)
+
     selector = models.load_selector()
-    code_selected = selector.transform([code_tfidf])
+    code_selected = selector.transform(code_tfidf)
 
     if args.verbose == True:
-        print('DONE')
+        print('// DONE')
 
 
 
@@ -88,10 +95,32 @@ if __name__ == '__main__':
     if args.verbose == True:
         print('// Computing prediction...')
 
+
+    def convert_sparse_matrix_to_sparse_tensor(X):
+        coo = X.tocoo()
+        indices = np.mat([coo.row, coo.col]).transpose()
+        return tf.SparseTensor(indices, coo.data, coo.shape)
+
+    print(type(code_selected))
+    #code_reordered = tf.sparse.reorder(code_selected)
+    code_reordered = code_selected.sort_indices()
+
     cnn = models.load_cnn()
-    print(cnn.predict(code_selected))
+
+    #code_selected = code_selected.reshape(code_selected.shape[0], code_selected.shape[1], 1)
+    code_final = tf.sparse.to_dense(tf.sparse.reshape(convert_sparse_matrix_to_sparse_tensor(code_selected), (code_selected.shape[0], code_selected.shape[1], 1)))
+
+    predictions = cnn.predict(code_final)
 
     if args.verbose == True:
         print('// DONE...')
+
+    keys = list(range(100))
+    d = {}
+    for i in keys:
+        d[i] = None
+
+    print(d[predictions.argmax()])
+
 
 
