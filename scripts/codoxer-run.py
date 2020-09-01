@@ -4,9 +4,16 @@
 # Import from the standard library
 import argparse
 
+
 # Import from codoxer
 from codoxer import models
 from codoxer.transformers import CxxTokenizer
+
+#from sklearn.feature_extraction import TfidfVectorizer
+
+class Tfidf(object):
+    pass
+
 
 if __name__ == '__main__':
 
@@ -20,7 +27,7 @@ if __name__ == '__main__':
     parser.add_argument('-n', '--n_best', type = int, choices = range(1,11), default = 1, help = 'return n most likely authors (best to combine with -p to get probabilities)')
 
     args = parser.parse_args()
-    print(args)
+    #print(args)
 
     file = args.code
 
@@ -41,8 +48,9 @@ if __name__ == '__main__':
 
     # Run through Tf-Idf
     tfidf = models.load_tfidf()
-
+    code_tfidf = tfidf.vocabulary_
 
     # Run trough CNN
     cnn = model.load_cnn()
+    print(cnn.predict(code_tfidf))
 
