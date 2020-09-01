@@ -45,6 +45,27 @@ class CxxTokenizer(BaseEstimator, TransformerMixin):
     def transform(self, X, y = None):
         print('transform()')
 
+        # If input is a single tring -> when called from command line
+        if isinstance(X, str):
+
+            # Write code to txt file in current? folder
+            with open('code.txt', 'w') as file:
+                file.write(X)
+
+            # Execute tokenizer in command line
+            cmd = 'tokenizer -l C++ -t c ./data/input/code.txt > ./data/output/code'
+            os.system(cmd)
+
+            # Read tokenized text from file
+            out = ''
+            with open('code.txt', 'r') as file:
+                out = file.read
+
+            # Cleanup
+            os.remove('code.txt')
+
+            return out
+
         if not os.path.exists('./data/'):
             os.makedirs('./data/')
         if not os.path.exists('./data/output'):
