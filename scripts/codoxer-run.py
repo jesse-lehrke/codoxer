@@ -80,8 +80,6 @@ if __name__ == '__main__':
 
     code_tfidf = code_tfidf.reshape(1,-1)
 
-    print(type(code_tfidf))
-    print(code_tfidf.shape)
 
     selector = models.load_selector()
     code_selected = selector.transform(code_tfidf)
@@ -101,7 +99,6 @@ if __name__ == '__main__':
         indices = np.mat([coo.row, coo.col]).transpose()
         return tf.SparseTensor(indices, coo.data, coo.shape)
 
-    print(type(code_selected))
     #code_reordered = tf.sparse.reorder(code_selected)
     code_reordered = code_selected.sort_indices()
 
@@ -115,12 +112,11 @@ if __name__ == '__main__':
     if args.verbose == True:
         print('// DONE...')
 
-    keys = list(range(100))
-    d = {}
-    for i in keys:
-        d[i] = None
+    # Load dict to map id to user
+    id_to_user = models.load_dict()
 
-    print(d[predictions.argmax()])
+    # OUTPUT
+    print(id_to_user[str(predictions.argmax())])
 
 
 
