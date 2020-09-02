@@ -16,7 +16,7 @@ def load_selector():
     return joblib.load(path)
 
 def load_cnn():
-    path = Path(__file__).parent / 'models/trained_model'
+    path = Path(__file__).parent / 'models/trained_model_132'
     return tf.keras.models.load_model(path)
 
 def load_dict():
