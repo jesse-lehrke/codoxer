@@ -15,6 +15,7 @@ get_tokenizer:
 
 get_models:
 	@curl -L https://filetransfer.io/data-package/fW69C6mp/download > models.zip
+	@mkdir codoxer/models
 	@mv models.zip codoxer/models/models.zip
 	@cd codoxer/models; tar xvf models.zip; rm models.zip;
 	@cd codoxer/models/Codoxer; mv -f  selector_132 user_id_dict_132.json vectorizer_132 ..;mv trained_model_132 ../trained_model_132
