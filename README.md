@@ -36,46 +36,5 @@ new data. The data has to be in the following form:
 The class codoxer.Train() can then be trained using codoxer.Train.fit().
 Afterwards predictions can be made with codoxer.Train.predict().
 
-
-
 For file organization see file_tree.txt
 
-.
-├── codoxer \n
-│   ├── basic_cnn.py\n
-│   ├── cnn_model.py\n
-│   ├── data\n
-│   │   ├── data.csv.gz\n
-│   │   ├── test\n
-│   │   ├── testing_data.csv\n
-│   │   └── tokens.csv\n
-│   ├── data.py\n
-│   ├── filter.py
-│   ├── __init__.py
-│   ├── lib.py
-│   ├── make_tokens.py
-│   ├── models.py
-│   ├── mvp.py
-│   ├── nb_mvp.py
-│   ├── tfidf.py
-│   ├── tokenizer.py
-│   ├── trainer.py
-│   ├── transformers.py
-│   └── utils.py
-├── file_tree.txt
-├── Makefile
-├── MANIFEST.in
-├── notebooks
-│   ├── Kafkaese_silly_model.ipynb
-│   └── tokenizer.ipynb
-├── README.md
-├── requirements.txt
-├── scripts
-│   ├── codoxer-run
-│   └── codoxer-run.py
-├── setup.py
-├── tests
-│   └── __init__.py
-└── trained_classes.txt
-
-5 directories, 31 files
