@@ -5,6 +5,7 @@
 import os
 import argparse
 import numpy as np
+import pandas as pd
 import tensorflow as tf
 import scipy
 
@@ -113,14 +114,27 @@ if __name__ == '__main__':
 
     predictions = cnn.predict(code_final)
 
+    #predictions = [str(p) for p in predictions]
+
     if args.verbose == True:
         print('// DONE...')
 
     # Load dict to map id to user
     id_to_user = models.load_dict()
 
-    # OUTPUT
-    print(id_to_user[str(predictions.argmax())])
+    out_frame = pd.DataFrame.from_dict(id_to_user, orient = 'index')
+    out_frame['probability'] = list(predictions[0,:])
+    out_frame.sort_values(by = 'probability', ascending = False, inplace = True)
+    out_frame.columns = ['user', 'probability']
 
+
+    # OUTPUT
+
+    columns = ['user', 'probability']
+    if args.probability == False:
+        columns = ['user']
+
+
+    print(out_frame[columns].head(args.n_best).to_string(index = False))
 
 
