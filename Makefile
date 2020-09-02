@@ -42,6 +42,7 @@ clean:
 	@rm -fr codoxer.egg-info
 
 install:
+	@make install_requirements
 	@pip install . -U
 
 all: clean install test black check_code
