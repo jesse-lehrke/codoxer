@@ -2,8 +2,10 @@
 # -*- coding: utf-8 -*-
 
 # Import from the standard library
+import os
 import argparse
 import numpy as np
+import pandas as pd
 import tensorflow as tf
 import scipy
 
@@ -80,8 +82,6 @@ if __name__ == '__main__':
 
     code_tfidf = code_tfidf.reshape(1,-1)
 
-    print(type(code_tfidf))
-    print(code_tfidf.shape)
 
     selector = models.load_selector()
     code_selected = selector.transform(code_tfidf)
@@ -92,6 +92,9 @@ if __name__ == '__main__':
 
 
     # Run trough CNN
+
+    os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
+
     if args.verbose == True:
         print('// Computing prediction...')
 
@@ -101,7 +104,6 @@ if __name__ == '__main__':
         indices = np.mat([coo.row, coo.col]).transpose()
         return tf.SparseTensor(indices, coo.data, coo.shape)
 
-    print(type(code_selected))
     #code_reordered = tf.sparse.reorder(code_selected)
     code_reordered = code_selected.sort_indices()
 
@@ -112,15 +114,27 @@ if __name__ == '__main__':
 
     predictions = cnn.predict(code_final)
 
+    #predictions = [str(p) for p in predictions]
+
     if args.verbose == True:
         print('// DONE...')
 
-    keys = list(range(100))
-    d = {}
-    for i in keys:
-        d[i] = None
+    # Load dict to map id to user
+    id_to_user = models.load_dict()
 
-    print(d[predictions.argmax()])
+    out_frame = pd.DataFrame.from_dict(id_to_user, orient = 'index')
+    out_frame['probability'] = list(predictions[0,:])
+    out_frame.sort_values(by = 'probability', ascending = False, inplace = True)
+    out_frame.columns = ['user', 'probability']
 
+
+    # OUTPUT
+
+    columns = ['user', 'probability']
+    if args.probability == False:
+        columns = ['user']
+
+
+    print(out_frame[columns].head(args.n_best).to_string(index = False))
 
 
