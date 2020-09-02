@@ -37,18 +37,19 @@ The class codoxer.Train() can then be trained using codoxer.Train.fit().
 Afterwards predictions can be made with codoxer.Train.predict().
 
 
-# File organization
+
+For file organization see file_tree.txt
 
 .
-├── codoxer
-│   ├── basic_cnn.py
-│   ├── cnn_model.py
-│   ├── data
-│   │   ├── data.csv.gz
-│   │   ├── test
-│   │   ├── testing_data.csv
-│   │   └── tokens.csv
-│   ├── data.py
+├── codoxer \n
+│   ├── basic_cnn.py\n
+│   ├── cnn_model.py\n
+│   ├── data\n
+│   │   ├── data.csv.gz\n
+│   │   ├── test\n
+│   │   ├── testing_data.csv\n
+│   │   └── tokens.csv\n
+│   ├── data.py\n
 │   ├── filter.py
 │   ├── __init__.py
 │   ├── lib.py
@@ -61,6 +62,7 @@ Afterwards predictions can be made with codoxer.Train.predict().
 │   ├── trainer.py
 │   ├── transformers.py
 │   └── utils.py
+├── file_tree.txt
 ├── Makefile
 ├── MANIFEST.in
 ├── notebooks
@@ -74,7 +76,6 @@ Afterwards predictions can be made with codoxer.Train.predict().
 ├── setup.py
 ├── tests
 │   └── __init__.py
-├── trained_classes.txt
-└── tree.txt
+└── trained_classes.txt
 
 5 directories, 31 files
