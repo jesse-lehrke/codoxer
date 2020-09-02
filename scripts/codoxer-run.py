@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 # Import from the standard library
+import os
 import argparse
 import numpy as np
 import tensorflow as tf
@@ -90,6 +91,9 @@ if __name__ == '__main__':
 
 
     # Run trough CNN
+
+    os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
+
     if args.verbose == True:
         print('// Computing prediction...')
 
