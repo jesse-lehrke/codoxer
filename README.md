@@ -36,5 +36,9 @@ new data. The data has to be in the following form:
 The class codoxer.Train() can then be trained using codoxer.Train.fit().
 Afterwards predictions can be made with codoxer.Train.predict().
 
+# Miscellaneous
+
 For file organization see file_tree.txt
+
+This project was begun by students of the Le Wagon Data Science and Machine Learning bootcamp (Berlin, Germany).
 
