@@ -67,11 +67,22 @@ class CNN_model(object):
         self.y_train = y_train_cat
         self.y_test = y_test_cat
 
+    def bin_y_prep(self):
+        keys = self.y_train.unique()
+        vals = [0, 1]
+        bin_dict = dict(zip(keys, vals))
+        self.classes = 2
+        self.y_train = np.array(self.y_train.map(lambda x: bin_dict[x]))
+        self.y_test = np.array(self.y_test.map(lambda x: bin_dict[x]))
+
     def X_prep(self):
         length = self.X_train.shape[0]
         width = self.X_train.shape[1]
         self.X_train = self.X_train.reshape(length, width, 1)
         self.X_test = self.X_test.reshape(self.X_test.shape[0], self.X_test.shape[1], 1)
+        self.input_shape = self.X_train.shape
+
+    def bin_X_prep(self):
         self.input_shape = self.X_train.shape
 
     def define_activations(self, *activations):
@@ -112,6 +123,63 @@ class CNN_model(object):
         model.compile(loss=loss, optimizer=optim, metrics=metrics)
 
         self.model = model
+        return model
+
+
+    def init_bin_conv_model(self, loss='binary_crossentropy', optim='adam', metrics=['accuracy']):
+        '''initializes the model'''
+
+        self.bin_y_prep()
+        self.X_prep()
+
+        model = models.Sequential()
+
+        model.add(layers.Conv1D(filters=32, kernel_size=8, activation=self.activation[0]))
+        model.add(layers.MaxPooling1D(pool_size=16))
+        model.add(layers.Flatten())
+        model.add(layers.Dense(256, activation=self.activation[1]))
+        model.add(layers.Dropout(.3))
+
+        #model.add(layers.Conv1D(filters=8, kernel_size=8, activation=self.activation[0]))
+        #model.add(layers.MaxPooling1D(pool_size=16))
+
+        #model.add(layers.Flatten())
+
+        model.add(layers.Dense(1, activation='sigmoid'))
+        model.compile(loss=loss, optimizer=optim, metrics=metrics)
+
+        self.model = model
+        return model
+
+
+    def init_bin_model(self, loss='binary_crossentropy', optim='adam', metrics=['accuracy']):
+        '''initializes the model'''
+
+        self.bin_y_prep()
+        self.bin_X_prep()
+
+        if self.classes != 2:
+            print('binary classification only performs if there are 2 classes')
+
+        model = models.Sequential()
+
+        model.add(layers.Dense(256, input_dim=self.input_shape[1], activation='relu'))
+        model.add(layers.Dropout(.4))
+        model.add(layers.Dropout(0.3))
+        model.add(layers.Dense(200, activation='relu'))
+        model.add(layers.Dropout(0.3))
+        model.add(layers.Dense(160, activation='relu'))
+        model.add(layers.Dropout(0.3))
+        model.add(layers.Dense(120, activation='relu'))
+        model.add(layers.Dropout(0.3))
+        model.add(layers.Dense(80, activation='relu'))
+        model.add(layers.Dropout(0.3))
+
+        model.add(layers.Dense(1, activation='sigmoid'))
+        model.compile(loss=loss, optimizer=optim, metrics=metrics)
+
+        self.model = model
+        return model
 
 
     def init_rnn_model(self, loss='categorical_crossentropy', optim='rmsprop', metrics=['accuracy']):
@@ -128,6 +196,7 @@ class CNN_model(object):
         model.compile(loss=loss, optimizer=optim, metrics=metrics)
 
         self.model = model
+        return model
 
 
     def init_lstm_model(self, loss='categorical_crossentropy', optim='rmsprop', metrics=['accuracy']):
@@ -144,6 +213,7 @@ class CNN_model(object):
         model.compile(loss=loss, optimizer=optim, metrics=metrics)
 
         self.model = model
+        return model
 
 
     def init_gru_model(self, loss='categorical_crossentropy', optim='rmsprop', metrics=['accuracy']):
@@ -160,6 +230,7 @@ class CNN_model(object):
         model.compile(loss=loss, optimizer=optim, metrics=metrics)
 
         self.model = model
+        return model
 
 
     def model_summary(self):
@@ -185,3 +256,4 @@ class CNN_model(object):
     def evaluate_model(self):
 
         self.model.evaluate(self.X_test, self.y_test)
+        return result
