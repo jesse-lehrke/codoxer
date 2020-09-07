@@ -11,4 +11,4 @@ groupama/data/base_pno.*
 .idea/
 codoxer/data
 codoxer/models
-notebooks
+notebooks/
