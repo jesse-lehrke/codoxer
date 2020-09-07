@@ -36,6 +36,15 @@ class TopNPicker(BaseEstimator, TransformerMixin):
 '''
 
 class CxxTokenizer(BaseEstimator, TransformerMixin):
+    """
+        C++ Tokenizer. Also works quite well for other languages
+
+        Note: The class saves evey code sample in a single file, 
+        performs the tokenization on that file and then reloads the file 
+        contents. Afterwards all files are deleted.
+
+    """
+    
     def __init__(self):
         pass
 
