@@ -37,6 +37,8 @@ The class codoxer.Train() can then be trained using codoxer.Train.fit().
 Afterwards predictions can be made with codoxer.Train.predict().
 
 # Miscellaneous
+This package makes use of the command line tokenizer made by Diomidis Spinellis (https://github.com/dspinellis/tokenizer). 
+Installation and operation is all handled by the makefile and pipeline repsectively.
 
 For file organization see file_tree.txt
 
