@@ -1,0 +1,39 @@
+.
+├── codoxer
+│   ├── basic_cnn.py
+│   ├── cnn_model.py
+│   ├── data
+│   │   ├── data.csv.gz
+│   │   ├── test
+│   │   ├── testing_data.csv
+│   │   └── tokens.csv
+│   ├── data.py
+│   ├── filter.py
+│   ├── __init__.py
+│   ├── lib.py
+│   ├── make_tokens.py
+│   ├── models.py
+│   ├── mvp.py
+│   ├── nb_mvp.py
+│   ├── tfidf.py
+│   ├── tokenizer.py
+│   ├── trainer.py
+│   ├── transformers.py
+│   └── utils.py
+├── file_tree.txt
+├── Makefile
+├── MANIFEST.in
+├── notebooks
+│   ├── Kafkaese_silly_model.ipynb
+│   └── tokenizer.ipynb
+├── README.md
+├── requirements.txt
+├── scripts
+│   ├── codoxer-run
+│   └── codoxer-run.py
+├── setup.py
+├── tests
+│   └── __init__.py
+└── trained_classes.txt
+
+5 directories, 31 files
