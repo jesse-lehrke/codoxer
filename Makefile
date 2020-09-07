@@ -8,7 +8,7 @@ install_requirements:
 
 get_tokenizer:
 	@curl -L https://github.com/dspinellis/tokenizer/archive/master.zip > master.zip
-	@tar xvf master.zip
+	@unzip master.zip
 	@rm master.zip
 	@cd tokenizer-master/src; make; make install
 	@rm -rf tokenizer-master
