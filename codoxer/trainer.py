@@ -10,8 +10,30 @@ from codoxer.utils import dictionary_target, token_y, inverse_dict
 
 
 class CodoxerModel(BaseEstimator):
+"""
+	Codoxer Model Architecture for retraining.
 
-    def __init__(self):
+	Pipeline:
+
+		Tokenizer
+
+		Tf-Idf Vectorizer 
+	
+		Percetnile Selector
+
+		CNN
+
+	Methods:
+
+		fit(X, y): fit pipeline on X and y
+
+		predict(X): predict class for X
+
+		predict_proba(X): class probabilities for X
+
+"""
+    def __init__(self, ngrams = 2):
+
         self.tokenizer = CxxTokenizer()
 
         self.tfidf = TfidfVectorizer(ngram_range=(1, ngrams))
@@ -24,6 +46,15 @@ class CodoxerModel(BaseEstimator):
 
 
     def fit(self, X, y):
+    	"""
+			Fit pipeline on X, y
+	
+			Parameters
+				
+				X: code samples 
+
+				y: code author
+    	"""
 
         # Tokenize
         X = self.tokenizer.fit(X, y)
@@ -55,10 +86,27 @@ class CodoxerModel(BaseEstimator):
 
 
     def predict(self, X):
+    	"""
+    		Predict class (author) of code
+
+    		Parameters:
+
+    			X = code samples
+    	"""
+
         preds = self.predict_proba(X)
         return self.user_to_id[preds.argmax()]
 
     def predict_proba(self, X):
+        """
+			Get class(= author) probabilities for code sample
+
+			Paramters:
+
+				X: code sample
+        """
+
+
         if self.user_to_id is None:
             raise NotFittedError('Model not fitted. Fit with CodoxerModel.fit(X, y).')
 
